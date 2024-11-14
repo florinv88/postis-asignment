@@ -13,7 +13,7 @@ public interface VacationRequestRepository extends JpaRepository<VacationRequest
 
 
     @Query("""
-            select count(1)
+            select sum(datediff(vacationEndDate,vacationStartDate))
             from VacationRequest
             where author =:id and status = '1'
             """)
