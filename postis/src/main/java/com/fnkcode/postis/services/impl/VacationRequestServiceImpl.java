@@ -46,18 +46,21 @@ public class VacationRequestServiceImpl implements VacationRequestService {
 
         if(!vacationRequestList.isEmpty()){
             requestResponseDTO.setResponseMsg(VACATION_REQUEST+status);
-            //TODO de extras intr-o metoda separata
-            List<VacationRequestDto> vacationRequestDtoList = new ArrayList<>();
-            for (VacationRequest vacationRequest : vacationRequestList) {
-                VacationRequestDto vacationRequestDto = mapVacationRequestToDto(vacationRequest);
-                vacationRequestDtoList.add(vacationRequestDto);
-            }
-            requestResponseDTO.setVacationRequestList(vacationRequestDtoList);
+            requestResponseDTO.setVacationRequestList(getVacationRequests(vacationRequestList));
         } else {
             requestResponseDTO.setResponseMsg(NO_VACATION_REQUEST+status);
         }
 
         return requestResponseDTO;
+    }
+
+    private List<VacationRequestDto> getVacationRequests(List<VacationRequest> vacationRequestList){
+        List<VacationRequestDto> vacationRequestDtoList = new ArrayList<>();
+        for (VacationRequest vacationRequest : vacationRequestList) {
+            VacationRequestDto vacationRequestDto = mapVacationRequestToDto(vacationRequest);
+            vacationRequestDtoList.add(vacationRequestDto);
+        }
+        return vacationRequestDtoList;
     }
 
     @Override
