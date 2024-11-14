@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static com.fnkcode.postis.utils.JwtUtils.extractUserFromJwtToken;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/vacation")
 @Slf4j
 @RequiredArgsConstructor
 public class VacationRequestController {
@@ -42,7 +42,7 @@ public class VacationRequestController {
     }
 
 
-    @GetMapping(value = "vacationRequests")
+    @GetMapping(value = "requests")
     public ResponseEntity<RequestResponseDTO> getPersonalRequests(@RequestParam String status){
         // statusului o sa ii fie inpus prin pattern unul din cele 3
 
