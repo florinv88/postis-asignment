@@ -73,11 +73,20 @@ public class VacationRequestController {
 
     }
 
-    @PostMapping(value = "staff/requests")
-    public ResponseEntity<RequestResponseDTO> getEmployeeRequests(@RequestParam String status){
+    @GetMapping(value = "staff/requests")
+    public ResponseEntity<RequestResponseDTO> getAllEmployeesRequests(@RequestParam String status){
         // statusului o sa ii fie inpus prin pattern unul din cele 2!!!!
 
         RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(status);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
+    @GetMapping(value = "staff/requests/{id}")
+    public ResponseEntity<RequestResponseDTO> getEmployeeRequests(@PathVariable long id){
+        RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(id);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

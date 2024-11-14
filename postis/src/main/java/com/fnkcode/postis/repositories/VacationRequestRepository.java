@@ -20,4 +20,5 @@ public interface VacationRequestRepository extends JpaRepository<VacationRequest
     long getNumberOfVacationDaysTakenBy(@Param("id") long id);
 
     List<VacationRequest> findAllByStatus(String status);
+    List<VacationRequest> findAllByAuthor(long author);
 }

@@ -47,10 +47,10 @@ public class VacationRequestServiceImpl implements VacationRequestService {
         List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByAuthorAndStatus(id, statusEnum.getValue());
 
         if(!vacationRequestList.isEmpty()){
-            requestResponseDTO.setResponseMsg(VACATION_REQUEST+status);
+            requestResponseDTO.setResponseMsg(VACATION_REQUEST);
             requestResponseDTO.setVacationRequestList(getVacationRequests(vacationRequestList));
         } else {
-            requestResponseDTO.setResponseMsg(NO_VACATION_REQUEST+status);
+            requestResponseDTO.setResponseMsg(NO_VACATION_REQUEST);
         }
 
         return requestResponseDTO;
@@ -119,16 +119,26 @@ public class VacationRequestServiceImpl implements VacationRequestService {
 
     @Override
     public RequestResponseDTO getAllRequestsBasedOn(String status) {
-        RequestResponseDTO requestResponseDTO = new RequestResponseDTO();
-
         RequestStatuses statusEnum = getStatus(status.toUpperCase());
         List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByStatus(statusEnum.getValue());
 
+        return mapEntityToDtoForManagerRequests(vacationRequestList);
+    }
+
+    @Override
+    public RequestResponseDTO getAllRequestsBasedOn(long id) {
+        List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByAuthor(id);
+
+        return mapEntityToDtoForManagerRequests(vacationRequestList);
+    }
+
+    private RequestResponseDTO mapEntityToDtoForManagerRequests(List<VacationRequest> vacationRequestList){
+        RequestResponseDTO requestResponseDTO = new RequestResponseDTO();
         if(!vacationRequestList.isEmpty()){
-            requestResponseDTO.setResponseMsg(VACATION_REQUEST+status);
+            requestResponseDTO.setResponseMsg(VACATION_REQUEST);
             requestResponseDTO.setRequestsList(getVacationRequestsByEmployee(vacationRequestList));
         } else {
-            requestResponseDTO.setResponseMsg(NO_VACATION_REQUEST+status);
+            requestResponseDTO.setResponseMsg(NO_VACATION_REQUEST);
         }
 
         return requestResponseDTO;
