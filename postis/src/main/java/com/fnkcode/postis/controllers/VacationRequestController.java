@@ -73,6 +73,17 @@ public class VacationRequestController {
 
     }
 
+    @PostMapping(value = "staff/requests")
+    public ResponseEntity<RequestResponseDTO> getEmployeeRequests(@RequestParam String status){
+        // statusului o sa ii fie inpus prin pattern unul din cele 2!!!!
+
+        RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(status);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
     private User getUser(){
         String jwtToken = request.getHeader("Authorization");
         User user;

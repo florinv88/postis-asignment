@@ -1,5 +1,6 @@
 package com.fnkcode.postis.services.impl;
 
+import com.fnkcode.postis.dto.ManagerRequestDTO;
 import com.fnkcode.postis.dto.RequestResponseDTO;
 import com.fnkcode.postis.dto.VacationRequestDto;
 import com.fnkcode.postis.entities.VacationRequest;
@@ -23,6 +24,7 @@ import java.util.List;
 import static com.fnkcode.postis.constants.MessageConstants.*;
 import static com.fnkcode.postis.enums.RequestStatuses.PENDING;
 import static com.fnkcode.postis.enums.RequestStatuses.getStatus;
+import static com.fnkcode.postis.mapper.VacationRequestMapper.mapManagerRequestToDto;
 import static com.fnkcode.postis.mapper.VacationRequestMapper.mapVacationRequestToDto;
 import static com.fnkcode.postis.utils.DateUtils.parseDateDDMMYYYY;
 
@@ -114,4 +116,31 @@ public class VacationRequestServiceImpl implements VacationRequestService {
             log.error("freeDaysRequested > remainDays");
         }
     }
+
+    @Override
+    public RequestResponseDTO getAllRequestsBasedOn(String status) {
+        RequestResponseDTO requestResponseDTO = new RequestResponseDTO();
+
+        RequestStatuses statusEnum = getStatus(status.toUpperCase());
+        List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByStatus(statusEnum.getValue());
+
+        if(!vacationRequestList.isEmpty()){
+            requestResponseDTO.setResponseMsg(VACATION_REQUEST+status);
+            requestResponseDTO.setRequestsList(getVacationRequestsByEmployee(vacationRequestList));
+        } else {
+            requestResponseDTO.setResponseMsg(NO_VACATION_REQUEST+status);
+        }
+
+        return requestResponseDTO;
+    }
+
+    private List<ManagerRequestDTO> getVacationRequestsByEmployee(List<VacationRequest> vacationRequestList){
+        List<ManagerRequestDTO> vacationRequestDtoList = new ArrayList<>();
+        for (VacationRequest vacationRequest : vacationRequestList) {
+            ManagerRequestDTO vacationRequestDto = mapManagerRequestToDto(vacationRequest);
+            vacationRequestDtoList.add(vacationRequestDto);
+        }
+        return vacationRequestDtoList;
+    }
+
 }

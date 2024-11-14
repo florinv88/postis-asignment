@@ -7,4 +7,5 @@ public interface VacationRequestService {
     RequestResponseDTO getAllRequestsBasedOn(long id , String status);
     RequestResponseDTO getNumberOfRemainingDays(long id);
     RequestResponseDTO createVacationRequest(long id, NewVacationRequest vacationRequest);
+    RequestResponseDTO getAllRequestsBasedOn(String status);
 }

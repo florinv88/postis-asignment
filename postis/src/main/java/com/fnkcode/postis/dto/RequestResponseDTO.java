@@ -12,4 +12,8 @@ public class RequestResponseDTO {
 
    @JsonInclude(JsonInclude.Include.NON_EMPTY)
    private List<VacationRequestDto> vacationRequestList = new ArrayList<>();
+
+   //used only by managers
+   @JsonInclude(JsonInclude.Include.NON_EMPTY)
+   private List<ManagerRequestDTO> requestsList = new ArrayList<>();
 }
