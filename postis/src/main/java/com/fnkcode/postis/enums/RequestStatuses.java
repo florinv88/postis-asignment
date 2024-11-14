@@ -18,14 +18,19 @@ public enum RequestStatuses {
     private final String value;
 
     private static final Map<String, RequestStatuses> STATUS_MAP = new HashMap<>();
+    private static final Map<String, RequestStatuses> VALUES_MAP = new HashMap<>();
 
     static {
         for (RequestStatuses status : RequestStatuses.values()) {
             STATUS_MAP.put(status.getName(), status);
+            VALUES_MAP.put(status.getValue(), status);
         }
     }
 
     public static RequestStatuses getStatus(String status) {
         return STATUS_MAP.get(status);
+    }
+    public static RequestStatuses getStatusByValue(String value) {
+        return VALUES_MAP.get(value);
     }
 }
