@@ -30,7 +30,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
         List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByAuthorAndStatus(id, statusEnum.getValue());
 
         if(!vacationRequestList.isEmpty()){
-            requestResponseDTO.setResponseMsg("Your vacation requests that have status: "+status+" are:");
+            requestResponseDTO.setResponseMsg("Your vacation requests that have status "+status+" are:");
             List<VacationRequestDto> vacationRequestDtoList = new ArrayList<>();
             for (VacationRequest vacationRequest : vacationRequestList) {
                 VacationRequestDto vacationRequestDto = mapVacationRequestToDto(vacationRequest);
