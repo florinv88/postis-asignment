@@ -105,7 +105,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
         LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 
-        long freeDaysRequested = ChronoUnit.DAYS.between(localEndDate, localStartDate);
+        long freeDaysRequested = ChronoUnit.DAYS.between(localStartDate, localEndDate);
         if (freeDaysRequested>remainDays){
             // eroare global handler
             log.error("freeDaysRequested > remainDays");

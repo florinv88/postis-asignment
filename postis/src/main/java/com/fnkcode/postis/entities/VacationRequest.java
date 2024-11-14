@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "vacation_request")
+@EntityListeners(AuditingEntityListener.class)
 @Getter @Setter
 @NoArgsConstructor
 public class VacationRequest {
@@ -29,6 +31,7 @@ public class VacationRequest {
     private String resolvedBy;
 
     @Column(name = "request_created_at", updatable = false)
+    @CreatedDate
     private Date requestCreatedAt;
 
     @Column(name = "vacation_start_date", updatable = false)
@@ -38,5 +41,6 @@ public class VacationRequest {
     private Date vacationEndDate;
 
     @Column(name = "request_updated_at", insertable = false)
+    @LastModifiedDate
     private Date requestUpdatedAt;
 }
