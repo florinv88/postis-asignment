@@ -12,7 +12,7 @@ import java.util.Date;
 public final class DateUtils {
     private DateUtils(){}
 
-    private static final String DDMMYYYY = "dd-mm-yyyy";
+    private static final String DDMMYYYY = "dd-MM-yyyy";
 
     public static Date parseDateDDMMYYYY(String source){
         return getDate(source, DDMMYYYY);
