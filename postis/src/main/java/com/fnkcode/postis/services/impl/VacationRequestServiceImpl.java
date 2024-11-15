@@ -5,6 +5,9 @@ import com.fnkcode.postis.dto.RequestResponseDTO;
 import com.fnkcode.postis.dto.VacationRequestDto;
 import com.fnkcode.postis.entities.VacationRequest;
 import com.fnkcode.postis.enums.RequestStatuses;
+import com.fnkcode.postis.exception.InvalidDateRangeException;
+import com.fnkcode.postis.exception.MaxDaysAllowedException;
+import com.fnkcode.postis.exception.ResourceNotFoundException;
 import com.fnkcode.postis.records.NewVacationRequest;
 import com.fnkcode.postis.records.OverlappingRequests;
 import com.fnkcode.postis.records.RequestDecision;
@@ -105,19 +108,20 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     private void allowRequest(long remainDays, NewVacationRequest vacationRequest) {
-        //todo de implementat global err handler
         Date startDate = parseDateDDMMYYYY(vacationRequest.vacationStartDate());
         Date endDate = parseDateDDMMYYYY(vacationRequest.vacationEndDate());
 
-        //if statDate > endDate -- err (de implementat)
-
         LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
         LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if (localStartDate.isAfter(localEndDate)) {
+            log.error("Start date is after the end date.");
+            throw new InvalidDateRangeException(VACATION_DATES_ERR);
+        }
 
         long freeDaysRequested = ChronoUnit.DAYS.between(localStartDate, localEndDate);
         if (freeDaysRequested>remainDays){
-            // eroare global handler
             log.error("freeDaysRequested > remainDays");
+            throw new MaxDaysAllowedException(VACATION_MAX_NUMBER_ERR);
         }
     }
 
@@ -138,20 +142,24 @@ public class VacationRequestServiceImpl implements VacationRequestService {
 
     @Override
     @Transactional
-    public Boolean isUpdated(RequestDecision requestDecision, User user) {
+    public RequestResponseDTO isUpdated(RequestDecision requestDecision, User user) {
         Optional<VacationRequest> vacationRequestOpt = vacationRequestRepository.findById(requestDecision.vacationRequestId());
-        if(vacationRequestOpt.isEmpty() ||  !vacationRequestOpt.get().getStatus().equals("0")) {
-            //altfel err handler
-            return Boolean.FALSE;
+        if (vacationRequestOpt.isEmpty()) {
+            throw new ResourceNotFoundException(REQUEST_NOT_FOUND);
+        }
+        if (!vacationRequestOpt.get().getStatus().equals("0")) {
+            throw new ResourceNotFoundException(REQUEST_NOT_UPDATEABLE);
         } else {
             VacationRequest vacationRequest = vacationRequestOpt.get();
             RequestStatuses status = getStatus(requestDecision.decision().toUpperCase());
             vacationRequest.setStatus(status.getValue());
             vacationRequest.setResolvedBy(user.id());
             vacationRequestRepository.save(vacationRequest);
-        }
 
-        return Boolean.TRUE;
+        }
+        RequestResponseDTO requestResponseDTO = new RequestResponseDTO();
+        requestResponseDTO.setResponseMsg(SUCCESS);
+        return requestResponseDTO;
     }
 
     @Override

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,7 +19,7 @@ import static com.fnkcode.postis.constants.MessageConstants.SUCCESS;
 import static com.fnkcode.postis.utils.JwtUtils.extractUserFromJwtToken;
 
 @RestController
-@RequestMapping("/vacation")
+@RequestMapping(value = "/vacation", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Slf4j
 @RequiredArgsConstructor
 public class VacationRequestController {
@@ -87,27 +88,17 @@ public class VacationRequestController {
     public ResponseEntity<RequestResponseDTO> makeDecision(@RequestBody RequestDecision requestDecision) {
         //requestDecision --> decision sa aiba patern
         User user = this.getUser();
-        Boolean isUpdated = vacationRequestService.isUpdated(requestDecision,user);
-        RequestResponseDTO response = new RequestResponseDTO();
+        RequestResponseDTO response = vacationRequestService.isUpdated(requestDecision, user);
 
-        if (isUpdated) {
-            response.setResponseMsg(SUCCESS);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
 
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(response);
-        } else {
-            response.setResponseMsg(FAILED);
-
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(response);
-        }
 
     }
 
     @GetMapping(value = "staff/requests/overlapping")
-    public ResponseEntity<RequestResponseDTO> getOverlappingRequests(){
+    public ResponseEntity<RequestResponseDTO> getOverlappingRequests() {
         RequestResponseDTO response = vacationRequestService.getAllOverlappingRequests();
 
         return ResponseEntity
