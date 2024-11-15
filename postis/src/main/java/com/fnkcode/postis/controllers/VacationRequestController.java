@@ -106,6 +106,15 @@ public class VacationRequestController {
 
     }
 
+    @GetMapping(value = "staff/requests/overlapping")
+    public ResponseEntity<RequestResponseDTO> getOverlappingRequests(){
+        RequestResponseDTO response = vacationRequestService.getAllOverlappingRequests();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(response);
+    }
+
     private User getUser() {
         String jwtToken = request.getHeader("Authorization");
         User user;

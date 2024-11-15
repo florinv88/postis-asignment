@@ -12,4 +12,5 @@ public interface VacationRequestService {
     RequestResponseDTO getAllRequestsBasedOn(String status);
     RequestResponseDTO getAllRequestsBasedOn(long id);
     Boolean isUpdated(RequestDecision requestDecision, User user);
+    RequestResponseDTO getAllOverlappingRequests();
 }

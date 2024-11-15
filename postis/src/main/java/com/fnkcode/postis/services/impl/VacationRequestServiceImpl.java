@@ -6,6 +6,7 @@ import com.fnkcode.postis.dto.VacationRequestDto;
 import com.fnkcode.postis.entities.VacationRequest;
 import com.fnkcode.postis.enums.RequestStatuses;
 import com.fnkcode.postis.records.NewVacationRequest;
+import com.fnkcode.postis.records.OverlappingRequests;
 import com.fnkcode.postis.records.RequestDecision;
 import com.fnkcode.postis.records.User;
 import com.fnkcode.postis.repositories.VacationRequestRepository;
@@ -151,6 +152,15 @@ public class VacationRequestServiceImpl implements VacationRequestService {
         }
 
         return Boolean.TRUE;
+    }
+
+    @Override
+    public RequestResponseDTO getAllOverlappingRequests() {
+        List<OverlappingRequests> overlappingRequests = vacationRequestRepository.findOverlappingRequests();
+        RequestResponseDTO requestResponseDTO = new RequestResponseDTO();
+        requestResponseDTO.setResponseMsg(OVERLAPPING);
+        requestResponseDTO.setOverlappingRequestsList(overlappingRequests);
+        return requestResponseDTO;
     }
 
     private RequestResponseDTO mapEntityToDtoForManagerRequests(List<VacationRequest> vacationRequestList){
