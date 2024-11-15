@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -32,15 +33,15 @@ public class VacationRequest {
 
     @Column(name = "request_created_at", updatable = false)
     @CreatedDate
-    private Date requestCreatedAt;
+    private LocalDate requestCreatedAt;
 
     @Column(name = "vacation_start_date", updatable = false)
-    private Date vacationStartDate;
+    private LocalDate vacationStartDate;
 
     @Column(name = "vacation_end_date", updatable = false)
-    private Date vacationEndDate;
+    private LocalDate vacationEndDate;
 
     @Column(name = "request_updated_at", insertable = false)
     @LastModifiedDate
-    private Date requestUpdatedAt;
+    private LocalDate requestUpdatedAt;
 }

@@ -97,8 +97,8 @@ public class VacationRequestServiceImpl implements VacationRequestService {
         VacationRequest vacationReq = new VacationRequest();
         vacationReq.setAuthor(id);
         vacationReq.setStatus(PENDING.getValue());
-        vacationReq.setVacationStartDate(parseDateDDMMYYYY(vacationRequest.vacationStartDate()));
-        vacationReq.setVacationEndDate(parseDateDDMMYYYY(vacationRequest.vacationEndDate()));
+        vacationReq.setVacationStartDate(vacationRequest.vacationStartDate());
+        vacationReq.setVacationEndDate(vacationRequest.vacationEndDate());
 
         vacationRequestRepository.save(vacationReq);
 
@@ -108,17 +108,13 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     private void allowRequest(long remainDays, NewVacationRequest vacationRequest) {
-        Date startDate = parseDateDDMMYYYY(vacationRequest.vacationStartDate());
-        Date endDate = parseDateDDMMYYYY(vacationRequest.vacationEndDate());
 
-        LocalDate localStartDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        LocalDate localEndDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        if (localStartDate.isAfter(localEndDate)) {
+        if (vacationRequest.vacationStartDate().isAfter(vacationRequest.vacationEndDate())) {
             log.error("Start date is after the end date.");
             throw new InvalidDateRangeException(VACATION_DATES_ERR);
         }
 
-        long freeDaysRequested = ChronoUnit.DAYS.between(localStartDate, localEndDate);
+        long freeDaysRequested = ChronoUnit.DAYS.between(vacationRequest.vacationStartDate(), vacationRequest.vacationEndDate());
         if (freeDaysRequested>remainDays){
             log.error("freeDaysRequested > remainDays");
             throw new MaxDaysAllowedException(VACATION_MAX_NUMBER_ERR);

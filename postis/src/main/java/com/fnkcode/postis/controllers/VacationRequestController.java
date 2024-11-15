@@ -7,12 +7,17 @@ import com.fnkcode.postis.records.RequestDecision;
 import com.fnkcode.postis.records.User;
 import com.fnkcode.postis.services.VacationRequestService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.fnkcode.postis.constants.MessageConstants.FAILED;
 import static com.fnkcode.postis.constants.MessageConstants.SUCCESS;
@@ -22,6 +27,7 @@ import static com.fnkcode.postis.utils.JwtUtils.extractUserFromJwtToken;
 @RequestMapping(value = "/vacation", produces = {MediaType.APPLICATION_JSON_VALUE})
 @Slf4j
 @RequiredArgsConstructor
+@Validated
 public class VacationRequestController {
 
     private final VacationRequestService vacationRequestService;
@@ -29,9 +35,9 @@ public class VacationRequestController {
 
 
     @GetMapping(value = "requests")
-    public ResponseEntity<RequestResponseDTO> getPersonalRequests(@RequestParam String status) {
-        // statusului o sa ii fie inpus prin pattern unul din cele 3
-
+    public ResponseEntity<RequestResponseDTO> getPersonalRequests(@RequestParam
+                                                                  @Pattern(regexp = "approved|pending|rejected", message = "The status of the request it's invalid!")
+                                                                  String status) {
         User user = this.getUser();
         RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(user.id(), status);
 
@@ -52,7 +58,7 @@ public class VacationRequestController {
     }
 
     @PostMapping(value = "requests")
-    public ResponseEntity<RequestResponseDTO> createVacationRequest(@RequestBody NewVacationRequest vacationRequest) {
+    public ResponseEntity<RequestResponseDTO> createVacationRequest(@Valid @RequestBody NewVacationRequest vacationRequest) {
         //trebuie adaugata validare pe pattern dates si obligativitate
 
         User user = this.getUser();

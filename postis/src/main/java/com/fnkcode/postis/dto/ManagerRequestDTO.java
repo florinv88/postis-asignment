@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Data
@@ -17,7 +18,7 @@ public class ManagerRequestDTO {
     private String status;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long resolvedBy;
-    private Date requestCreatedAt;
-    private Date vacationStartDate;
-    private Date vacationEndDate;
+    private LocalDate requestCreatedAt;
+    private LocalDate vacationStartDate;
+    private LocalDate vacationEndDate;
 }
