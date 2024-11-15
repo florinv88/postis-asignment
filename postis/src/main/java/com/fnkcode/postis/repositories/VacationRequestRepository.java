@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface VacationRequestRepository extends JpaRepository<VacationRequest, Long> {
 
@@ -21,4 +22,5 @@ public interface VacationRequestRepository extends JpaRepository<VacationRequest
 
     List<VacationRequest> findAllByStatus(String status);
     List<VacationRequest> findAllByAuthor(long author);
+    Optional<VacationRequest> findById(long id);
 }

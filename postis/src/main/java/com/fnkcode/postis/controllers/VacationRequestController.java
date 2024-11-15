@@ -3,6 +3,7 @@ package com.fnkcode.postis.controllers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fnkcode.postis.dto.RequestResponseDTO;
 import com.fnkcode.postis.records.NewVacationRequest;
+import com.fnkcode.postis.records.RequestDecision;
 import com.fnkcode.postis.records.User;
 import com.fnkcode.postis.services.VacationRequestService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.fnkcode.postis.constants.MessageConstants.FAILED;
+import static com.fnkcode.postis.constants.MessageConstants.SUCCESS;
 import static com.fnkcode.postis.utils.JwtUtils.extractUserFromJwtToken;
 
 @RestController
@@ -23,22 +26,9 @@ public class VacationRequestController {
     private final VacationRequestService vacationRequestService;
     private final HttpServletRequest request;
 
-    @GetMapping(value = "demo")
-    public String demo(){
-        String jwtToken = request.getHeader("Authorization");
-        User user;
-        try {
-             user = extractUserFromJwtToken(jwtToken);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        log.info("demo controller api called");
-        return "this is a demo";
-    }
-
 
     @GetMapping(value = "requests")
-    public ResponseEntity<RequestResponseDTO> getPersonalRequests(@RequestParam String status){
+    public ResponseEntity<RequestResponseDTO> getPersonalRequests(@RequestParam String status) {
         // statusului o sa ii fie inpus prin pattern unul din cele 3
 
         User user = this.getUser();
@@ -51,7 +41,7 @@ public class VacationRequestController {
     }
 
     @GetMapping(value = "days")
-    public ResponseEntity<RequestResponseDTO> getNumberOfRemainingDays(){
+    public ResponseEntity<RequestResponseDTO> getNumberOfRemainingDays() {
         User user = this.getUser();
         RequestResponseDTO response = vacationRequestService.getNumberOfRemainingDays(user.id());
 
@@ -61,11 +51,11 @@ public class VacationRequestController {
     }
 
     @PostMapping(value = "requests")
-    public ResponseEntity<RequestResponseDTO> createVacationRequest(@RequestBody NewVacationRequest vacationRequest){
+    public ResponseEntity<RequestResponseDTO> createVacationRequest(@RequestBody NewVacationRequest vacationRequest) {
         //trebuie adaugata validare pe pattern dates si obligativitate
 
         User user = this.getUser();
-        RequestResponseDTO response = vacationRequestService.createVacationRequest(user.id(),vacationRequest);
+        RequestResponseDTO response = vacationRequestService.createVacationRequest(user.id(), vacationRequest);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -74,7 +64,7 @@ public class VacationRequestController {
     }
 
     @GetMapping(value = "staff/requests")
-    public ResponseEntity<RequestResponseDTO> getAllEmployeesRequests(@RequestParam String status){
+    public ResponseEntity<RequestResponseDTO> getAllEmployeesRequests(@RequestParam String status) {
         // statusului o sa ii fie inpus prin pattern unul din cele 2!!!!
 
         RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(status);
@@ -85,7 +75,7 @@ public class VacationRequestController {
     }
 
     @GetMapping(value = "staff/requests/{id}")
-    public ResponseEntity<RequestResponseDTO> getEmployeeRequests(@PathVariable long id){
+    public ResponseEntity<RequestResponseDTO> getEmployeeRequests(@PathVariable long id) {
         RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(id);
 
         return ResponseEntity
@@ -93,7 +83,30 @@ public class VacationRequestController {
                 .body(response);
     }
 
-    private User getUser(){
+    @PutMapping(value = "staff/requests")
+    public ResponseEntity<RequestResponseDTO> makeDecision(@RequestBody RequestDecision requestDecision) {
+        //requestDecision --> decision sa aiba patern
+        User user = this.getUser();
+        Boolean isUpdated = vacationRequestService.isUpdated(requestDecision,user);
+        RequestResponseDTO response = new RequestResponseDTO();
+
+        if (isUpdated) {
+            response.setResponseMsg(SUCCESS);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(response);
+        } else {
+            response.setResponseMsg(FAILED);
+
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(response);
+        }
+
+    }
+
+    private User getUser() {
         String jwtToken = request.getHeader("Authorization");
         User user;
         try {

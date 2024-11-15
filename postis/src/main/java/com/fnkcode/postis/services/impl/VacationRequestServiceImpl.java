@@ -6,6 +6,8 @@ import com.fnkcode.postis.dto.VacationRequestDto;
 import com.fnkcode.postis.entities.VacationRequest;
 import com.fnkcode.postis.enums.RequestStatuses;
 import com.fnkcode.postis.records.NewVacationRequest;
+import com.fnkcode.postis.records.RequestDecision;
+import com.fnkcode.postis.records.User;
 import com.fnkcode.postis.repositories.VacationRequestRepository;
 import com.fnkcode.postis.services.VacationRequestService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static com.fnkcode.postis.constants.MessageConstants.*;
 import static com.fnkcode.postis.enums.RequestStatuses.PENDING;
@@ -130,6 +133,24 @@ public class VacationRequestServiceImpl implements VacationRequestService {
         List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByAuthor(id);
 
         return mapEntityToDtoForManagerRequests(vacationRequestList);
+    }
+
+    @Override
+    @Transactional
+    public Boolean isUpdated(RequestDecision requestDecision, User user) {
+        Optional<VacationRequest> vacationRequestOpt = vacationRequestRepository.findById(requestDecision.vacationRequestId());
+        if(vacationRequestOpt.isEmpty() ||  !vacationRequestOpt.get().getStatus().equals("0")) {
+            //altfel err handler
+            return Boolean.FALSE;
+        } else {
+            VacationRequest vacationRequest = vacationRequestOpt.get();
+            RequestStatuses status = getStatus(requestDecision.decision().toUpperCase());
+            vacationRequest.setStatus(status.getValue());
+            vacationRequest.setResolvedBy(user.id());
+            vacationRequestRepository.save(vacationRequest);
+        }
+
+        return Boolean.TRUE;
     }
 
     private RequestResponseDTO mapEntityToDtoForManagerRequests(List<VacationRequest> vacationRequestList){

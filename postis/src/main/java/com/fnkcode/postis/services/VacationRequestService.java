@@ -2,6 +2,8 @@ package com.fnkcode.postis.services;
 
 import com.fnkcode.postis.dto.RequestResponseDTO;
 import com.fnkcode.postis.records.NewVacationRequest;
+import com.fnkcode.postis.records.RequestDecision;
+import com.fnkcode.postis.records.User;
 
 public interface VacationRequestService {
     RequestResponseDTO getAllRequestsBasedOn(long id , String status);
@@ -9,4 +11,5 @@ public interface VacationRequestService {
     RequestResponseDTO createVacationRequest(long id, NewVacationRequest vacationRequest);
     RequestResponseDTO getAllRequestsBasedOn(String status);
     RequestResponseDTO getAllRequestsBasedOn(long id);
+    Boolean isUpdated(RequestDecision requestDecision, User user);
 }

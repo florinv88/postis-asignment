@@ -28,7 +28,7 @@ public class VacationRequest {
     private String status;
 
     @Column(name = "resolved_by")
-    private String resolvedBy;
+    private Long resolvedBy;
 
     @Column(name = "request_created_at", updatable = false)
     @CreatedDate
