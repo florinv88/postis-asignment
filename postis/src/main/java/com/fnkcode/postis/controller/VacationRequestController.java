@@ -1,7 +1,7 @@
 package com.fnkcode.postis.controller;
 
-import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fnkcode.postis.annotation.ManagerEndpoint;
+import com.fnkcode.postis.context.UserContext;
 import com.fnkcode.postis.dto.ErrorRequestDTO;
 import com.fnkcode.postis.dto.RequestResponseDTO;
 import com.fnkcode.postis.records.NewVacationRequest;
@@ -14,7 +14,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -25,8 +24,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import static com.fnkcode.postis.utils.JwtUtils.extractUserFromJwtToken;
 
 @Tag(
         name="VACATION REQUEST API",
@@ -40,7 +37,7 @@ import static com.fnkcode.postis.utils.JwtUtils.extractUserFromJwtToken;
 public class VacationRequestController {
 
     private final VacationRequestService vacationRequestService;
-    private final HttpServletRequest request;
+    private final UserContext userContext;
 
     @Operation(
             summary = "Get personal requests",
@@ -58,7 +55,7 @@ public class VacationRequestController {
     public ResponseEntity<RequestResponseDTO> getPersonalRequests(@RequestParam
                                                                   @Pattern(regexp = "approved|pending|rejected", message = "The status of the request it's invalid!")
                                                                   String status) {
-        User user = this.getUser();
+        User user = userContext.getUser();
         RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOnAuthor(user.id(), status);
 
         return ResponseEntity
@@ -77,7 +74,7 @@ public class VacationRequestController {
     )
     @GetMapping(value = "days")
     public ResponseEntity<RequestResponseDTO> getNumberOfRemainingDays() {
-        User user = this.getUser();
+        User user = userContext.getUser();
         RequestResponseDTO response = vacationRequestService.getNumberOfRemainingDays(user.id());
 
         return ResponseEntity
@@ -112,7 +109,7 @@ public class VacationRequestController {
     )
     @PostMapping(value = "requests")
     public ResponseEntity<RequestResponseDTO> createVacationRequest(@Valid @RequestBody NewVacationRequest vacationRequest) {
-        User user = this.getUser();
+        User user = userContext.getUser();
         RequestResponseDTO response = vacationRequestService.createVacationRequest(user.id(), vacationRequest);
 
         return ResponseEntity
@@ -132,6 +129,7 @@ public class VacationRequestController {
             )
     }
     )
+    @ManagerEndpoint
     @GetMapping(value = "staff/requests")
     public ResponseEntity<RequestResponseDTO> getAllEmployeesRequests(@RequestParam
                                                                       @Pattern(regexp = "pending|approved",message = "The status of the request it's not allowed")
@@ -154,6 +152,7 @@ public class VacationRequestController {
             )
     }
     )
+    @ManagerEndpoint
     @GetMapping(value = "staff/requests/{id}")
     public ResponseEntity<RequestResponseDTO> getEmployeeRequests(@PathVariable
                                                                   @NotNull(message = "The id it's mandatory.")
@@ -192,9 +191,10 @@ public class VacationRequestController {
             )
     }
     )
+    @ManagerEndpoint
     @PutMapping(value = "staff/requests")
     public ResponseEntity<RequestResponseDTO> makeDecision(@Valid @RequestBody RequestDecision requestDecision) {
-        User user = this.getUser();
+        User user = userContext.getUser();
         RequestResponseDTO response = vacationRequestService.makeDecision(requestDecision, user);
 
         return ResponseEntity
@@ -216,6 +216,7 @@ public class VacationRequestController {
             )
     }
     )
+    @ManagerEndpoint
     @GetMapping(value = "staff/requests/overlapping")
     public ResponseEntity<RequestResponseDTO> getOverlappingRequests() {
         RequestResponseDTO response = vacationRequestService.getAllOverlappingRequests();
@@ -223,16 +224,5 @@ public class VacationRequestController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
-    }
-
-    private User getUser() {
-        String jwtToken = request.getHeader("Authorization");
-        User user;
-        try {
-            user = extractUserFromJwtToken(jwtToken);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-        return user;
     }
 }

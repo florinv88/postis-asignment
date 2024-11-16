@@ -96,6 +96,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(errorRequestDTO);
     }
 
+    @ExceptionHandler(PermisionDeniedException.class)
+    public ResponseEntity<ErrorRequestDTO> handlePermisionDeniedException(PermisionDeniedException exception){
+
+        ErrorRequestDTO errorRequestDTO = ErrorRequestDTO.builder()
+                .httpStatus(HttpStatus.UNAUTHORIZED)
+                .errorMessage(exception.getMessage())
+                .errorTime(LocalDateTime.now())
+                .build();
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(errorRequestDTO);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorRequestDTO> handleGlobalException(Exception exception) {
         ErrorRequestDTO errorRequestDTO = ErrorRequestDTO.builder()
