@@ -6,11 +6,11 @@ import com.fnkcode.postis.records.RequestDecision;
 import com.fnkcode.postis.records.User;
 
 public interface VacationRequestService {
-    RequestResponseDTO getAllRequestsBasedOn(long id , String status);
+    RequestResponseDTO getAllRequestsBasedOnAuthor(long id , String status);
     RequestResponseDTO getNumberOfRemainingDays(long id);
     RequestResponseDTO createVacationRequest(long id, NewVacationRequest vacationRequest);
     RequestResponseDTO getAllRequestsBasedOn(String status);
-    RequestResponseDTO getAllRequestsBasedOn(long id);
+    RequestResponseDTO getAllRequestsBasedOnAuthor(String id);
     RequestResponseDTO makeDecision(RequestDecision requestDecision, User user);
     RequestResponseDTO getAllOverlappingRequests();
 }

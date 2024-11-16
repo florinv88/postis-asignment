@@ -46,7 +46,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     private long MAX_ALLOWED_DAYS;
 
     @Override
-    public RequestResponseDTO getAllRequestsBasedOn(long id, String status) {
+    public RequestResponseDTO getAllRequestsBasedOnAuthor(long id, String status) {
 
         RequestResponseDTO requestResponseDTO = new RequestResponseDTO();
 
@@ -130,11 +130,11 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     @Override
-    public RequestResponseDTO getAllRequestsBasedOn(long id) {
+    public RequestResponseDTO getAllRequestsBasedOnAuthor(String id) {
         //todo
         //aici ar merge mai intai o verificare de user in db
         //daca nu e UserNotFoundException
-        List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByAuthor(id);
+        List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByAuthor(Long.parseLong(id));
 
         return mapEntityToDtoForManagerRequests(vacationRequestList);
     }
@@ -142,7 +142,8 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     @Override
     @Transactional
     public RequestResponseDTO makeDecision(RequestDecision requestDecision, User user) {
-        Optional<VacationRequest> vacationRequestOpt = vacationRequestRepository.findById(requestDecision.vacationRequestId());
+        Long vacationId = Long.parseLong(requestDecision.vacationRequestId());
+        Optional<VacationRequest> vacationRequestOpt = vacationRequestRepository.findById(vacationId);
         if (vacationRequestOpt.isEmpty()) {
             throw new ResourceNotFoundException(REQUEST_NOT_FOUND);
         }

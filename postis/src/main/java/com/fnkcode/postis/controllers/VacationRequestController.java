@@ -36,7 +36,7 @@ public class VacationRequestController {
                                                                   @Pattern(regexp = "approved|pending|rejected", message = "The status of the request it's invalid!")
                                                                   String status) {
         User user = this.getUser();
-        RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(user.id(), status);
+        RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOnAuthor(user.id(), status);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
@@ -79,8 +79,9 @@ public class VacationRequestController {
     @GetMapping(value = "staff/requests/{id}")
     public ResponseEntity<RequestResponseDTO> getEmployeeRequests(@PathVariable
                                                                   @NotNull(message = "The id it's mandatory.")
-                                                                  long id) {
-        RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(id);
+                                                                  @Pattern(regexp = "^[0-9]+$",message = "The id is invalid!")
+                                                                  String id) {
+        RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOnAuthor(id);
 
         return ResponseEntity
                 .status(HttpStatus.OK)

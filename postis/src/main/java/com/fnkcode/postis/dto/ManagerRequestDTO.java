@@ -18,7 +18,7 @@ public class ManagerRequestDTO {
     private String status;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long resolvedBy;
-    private LocalDate requestCreatedAt;
+    private Date requestCreatedAt;
     private LocalDate vacationStartDate;
     private LocalDate vacationEndDate;
 }

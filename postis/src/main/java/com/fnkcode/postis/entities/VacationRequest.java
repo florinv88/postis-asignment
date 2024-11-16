@@ -33,7 +33,7 @@ public class VacationRequest {
 
     @Column(name = "request_created_at", updatable = false)
     @CreatedDate
-    private LocalDate requestCreatedAt;
+    private Date requestCreatedAt;
 
     @Column(name = "vacation_start_date", updatable = false)
     private LocalDate vacationStartDate;
@@ -43,5 +43,5 @@ public class VacationRequest {
 
     @Column(name = "request_updated_at", insertable = false)
     @LastModifiedDate
-    private LocalDate requestUpdatedAt;
+    private Date requestUpdatedAt;
 }
