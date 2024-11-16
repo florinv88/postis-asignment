@@ -1,9 +1,9 @@
-package com.fnkcode.postis.services.impl;
+package com.fnkcode.postis.service.impl;
 
 import com.fnkcode.postis.dto.ManagerRequestDTO;
 import com.fnkcode.postis.dto.RequestResponseDTO;
 import com.fnkcode.postis.dto.VacationRequestDto;
-import com.fnkcode.postis.entities.VacationRequest;
+import com.fnkcode.postis.entity.VacationRequest;
 import com.fnkcode.postis.enums.RequestStatuses;
 import com.fnkcode.postis.exception.InvalidDateRangeException;
 import com.fnkcode.postis.exception.MaxDaysAllowedException;
@@ -12,19 +12,16 @@ import com.fnkcode.postis.records.NewVacationRequest;
 import com.fnkcode.postis.records.OverlappingRequests;
 import com.fnkcode.postis.records.RequestDecision;
 import com.fnkcode.postis.records.User;
-import com.fnkcode.postis.repositories.VacationRequestRepository;
-import com.fnkcode.postis.services.VacationRequestService;
+import com.fnkcode.postis.repository.VacationRequestRepository;
+import com.fnkcode.postis.service.VacationRequestService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,7 +30,6 @@ import static com.fnkcode.postis.enums.RequestStatuses.PENDING;
 import static com.fnkcode.postis.enums.RequestStatuses.getStatus;
 import static com.fnkcode.postis.mapper.VacationRequestMapper.mapManagerRequestToDto;
 import static com.fnkcode.postis.mapper.VacationRequestMapper.mapVacationRequestToDto;
-import static com.fnkcode.postis.utils.DateUtils.parseDateDDMMYYYY;
 
 @Service
 @RequiredArgsConstructor

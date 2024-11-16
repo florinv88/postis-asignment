@@ -1,11 +1,11 @@
-package com.fnkcode.postis.controllers;
+package com.fnkcode.postis.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fnkcode.postis.dto.RequestResponseDTO;
 import com.fnkcode.postis.records.NewVacationRequest;
 import com.fnkcode.postis.records.RequestDecision;
 import com.fnkcode.postis.records.User;
-import com.fnkcode.postis.services.VacationRequestService;
+import com.fnkcode.postis.service.VacationRequestService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

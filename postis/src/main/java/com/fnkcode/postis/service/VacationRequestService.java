@@ -1,4 +1,4 @@
-package com.fnkcode.postis.services;
+package com.fnkcode.postis.service;
 
 import com.fnkcode.postis.dto.RequestResponseDTO;
 import com.fnkcode.postis.records.NewVacationRequest;

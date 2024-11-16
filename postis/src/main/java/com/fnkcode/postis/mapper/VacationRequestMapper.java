@@ -2,7 +2,7 @@ package com.fnkcode.postis.mapper;
 
 import com.fnkcode.postis.dto.ManagerRequestDTO;
 import com.fnkcode.postis.dto.VacationRequestDto;
-import com.fnkcode.postis.entities.VacationRequest;
+import com.fnkcode.postis.entity.VacationRequest;
 import org.springframework.beans.BeanUtils;
 
 import static com.fnkcode.postis.enums.RequestStatuses.getStatusByValue;

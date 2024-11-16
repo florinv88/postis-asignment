@@ -1,4 +1,4 @@
-package com.fnkcode.postis.entities;
+package com.fnkcode.postis.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

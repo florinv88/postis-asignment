@@ -1,6 +1,6 @@
-package com.fnkcode.postis.repositories;
+package com.fnkcode.postis.repository;
 
-import com.fnkcode.postis.entities.VacationRequest;
+import com.fnkcode.postis.entity.VacationRequest;
 import com.fnkcode.postis.records.OverlappingRequests;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
