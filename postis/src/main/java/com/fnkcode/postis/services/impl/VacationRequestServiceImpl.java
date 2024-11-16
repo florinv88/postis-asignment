@@ -131,6 +131,9 @@ public class VacationRequestServiceImpl implements VacationRequestService {
 
     @Override
     public RequestResponseDTO getAllRequestsBasedOn(long id) {
+        //todo
+        //aici ar merge mai intai o verificare de user in db
+        //daca nu e UserNotFoundException
         List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByAuthor(id);
 
         return mapEntityToDtoForManagerRequests(vacationRequestList);
@@ -138,7 +141,7 @@ public class VacationRequestServiceImpl implements VacationRequestService {
 
     @Override
     @Transactional
-    public RequestResponseDTO isUpdated(RequestDecision requestDecision, User user) {
+    public RequestResponseDTO makeDecision(RequestDecision requestDecision, User user) {
         Optional<VacationRequest> vacationRequestOpt = vacationRequestRepository.findById(requestDecision.vacationRequestId());
         if (vacationRequestOpt.isEmpty()) {
             throw new ResourceNotFoundException(REQUEST_NOT_FOUND);

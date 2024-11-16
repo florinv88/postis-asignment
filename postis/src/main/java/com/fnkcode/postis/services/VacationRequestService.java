@@ -11,6 +11,6 @@ public interface VacationRequestService {
     RequestResponseDTO createVacationRequest(long id, NewVacationRequest vacationRequest);
     RequestResponseDTO getAllRequestsBasedOn(String status);
     RequestResponseDTO getAllRequestsBasedOn(long id);
-    RequestResponseDTO isUpdated(RequestDecision requestDecision, User user);
+    RequestResponseDTO makeDecision(RequestDecision requestDecision, User user);
     RequestResponseDTO getAllOverlappingRequests();
 }

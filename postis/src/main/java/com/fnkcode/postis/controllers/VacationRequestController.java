@@ -8,6 +8,7 @@ import com.fnkcode.postis.records.User;
 import com.fnkcode.postis.services.VacationRequestService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,10 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-import static com.fnkcode.postis.constants.MessageConstants.FAILED;
-import static com.fnkcode.postis.constants.MessageConstants.SUCCESS;
 import static com.fnkcode.postis.utils.JwtUtils.extractUserFromJwtToken;
 
 @RestController
@@ -59,8 +56,6 @@ public class VacationRequestController {
 
     @PostMapping(value = "requests")
     public ResponseEntity<RequestResponseDTO> createVacationRequest(@Valid @RequestBody NewVacationRequest vacationRequest) {
-        //trebuie adaugata validare pe pattern dates si obligativitate
-
         User user = this.getUser();
         RequestResponseDTO response = vacationRequestService.createVacationRequest(user.id(), vacationRequest);
 
@@ -71,9 +66,9 @@ public class VacationRequestController {
     }
 
     @GetMapping(value = "staff/requests")
-    public ResponseEntity<RequestResponseDTO> getAllEmployeesRequests(@RequestParam String status) {
-        // statusului o sa ii fie inpus prin pattern unul din cele 2!!!!
-
+    public ResponseEntity<RequestResponseDTO> getAllEmployeesRequests(@RequestParam
+                                                                      @Pattern(regexp = "pending|approved",message = "The status of the request it's not allowed")
+                                                                      String status) {
         RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(status);
 
         return ResponseEntity
@@ -82,7 +77,9 @@ public class VacationRequestController {
     }
 
     @GetMapping(value = "staff/requests/{id}")
-    public ResponseEntity<RequestResponseDTO> getEmployeeRequests(@PathVariable long id) {
+    public ResponseEntity<RequestResponseDTO> getEmployeeRequests(@PathVariable
+                                                                  @NotNull(message = "The id it's mandatory.")
+                                                                  long id) {
         RequestResponseDTO response = vacationRequestService.getAllRequestsBasedOn(id);
 
         return ResponseEntity
@@ -91,10 +88,9 @@ public class VacationRequestController {
     }
 
     @PutMapping(value = "staff/requests")
-    public ResponseEntity<RequestResponseDTO> makeDecision(@RequestBody RequestDecision requestDecision) {
-        //requestDecision --> decision sa aiba patern
+    public ResponseEntity<RequestResponseDTO> makeDecision(@Valid @RequestBody RequestDecision requestDecision) {
         User user = this.getUser();
-        RequestResponseDTO response = vacationRequestService.isUpdated(requestDecision, user);
+        RequestResponseDTO response = vacationRequestService.makeDecision(requestDecision, user);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
