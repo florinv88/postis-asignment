@@ -19,7 +19,7 @@ public interface VacationRequestRepository extends JpaRepository<VacationRequest
             from VacationRequest
             where author =:id and status = '1'
             """)
-    long getNumberOfVacationDaysTakenBy(@Param("id") long id);
+    Long getNumberOfVacationDaysTakenBy(@Param("id") long id);
 
     List<VacationRequest> findAllByStatus(String status);
 

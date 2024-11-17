@@ -80,7 +80,8 @@ public class VacationRequestServiceImpl implements VacationRequestService {
     }
 
     private long remainDays(long id){
-        long numberOfDaysTaken = vacationRequestRepository.getNumberOfVacationDaysTakenBy(id);
+        Long numberOfDaysTaken = vacationRequestRepository.getNumberOfVacationDaysTakenBy(id);
+        if (numberOfDaysTaken==null) return MAX_ALLOWED_DAYS;
         return MAX_ALLOWED_DAYS-numberOfDaysTaken;
     }
 
@@ -127,9 +128,6 @@ public class VacationRequestServiceImpl implements VacationRequestService {
 
     @Override
     public RequestResponseDTO getAllRequestsBasedOnAuthor(String id) {
-        //todo
-        //aici ar merge mai intai o verificare de user in db
-        //daca nu e UserNotFoundException
         List<VacationRequest> vacationRequestList = vacationRequestRepository.findAllByAuthor(Long.parseLong(id));
 
         return mapEntityToDtoForManagerRequests(vacationRequestList);
@@ -160,10 +158,14 @@ public class VacationRequestServiceImpl implements VacationRequestService {
 
     @Override
     public RequestResponseDTO getAllOverlappingRequests() {
-        List<OverlappingRequests> overlappingRequests = vacationRequestRepository.findOverlappingRequests();
         RequestResponseDTO requestResponseDTO = new RequestResponseDTO();
-        requestResponseDTO.setResponseMsg(OVERLAPPING);
-        requestResponseDTO.setOverlappingRequestsList(overlappingRequests);
+        List<OverlappingRequests> overlappingRequests = vacationRequestRepository.findOverlappingRequests();
+        if (overlappingRequests.isEmpty()) {
+            requestResponseDTO.setResponseMsg(NO_VACATION_REQUEST);
+        } else {
+            requestResponseDTO.setResponseMsg(OVERLAPPING);
+            requestResponseDTO.setOverlappingRequestsList(overlappingRequests);
+        }
         return requestResponseDTO;
     }
 
